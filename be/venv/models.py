@@ -41,28 +41,31 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True)
-    parent_id = Column(Integer, ForeignKey("tasks.id"), nullable=True)
-    project_id = Column(Integer, ForeignKey("projects.id"))
+    parent_id = Column(Integer, ForeignKey('tasks.id'), nullable=True)
+    project_id = Column(Integer, ForeignKey('projects.id'))
     title = Column(String, index=True)
     description = Column(Text)
     status = Column(String, index=True)
-    assignee_id = Column(Integer, ForeignKey("users.id"))
+    assignee_id = Column(Integer, ForeignKey('users.id'))
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     project = relationship("Project", back_populates="tasks")
     assignee = relationship("User", back_populates="tasks")
     comments = relationship("Comment", back_populates="task")
     subtasks = relationship("Task", back_populates="parent", remote_side=[id])
+    parent = relationship("Task", remote_side=[id])
+
 
 class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True, index=True)
-    parent_id = Column(Integer, ForeignKey("comments.id"), nullable=True)
-    task_id = Column(Integer, ForeignKey("tasks.id"))
+    parent_id = Column(Integer, ForeignKey('comments.id'), nullable=True)
+    task_id = Column(Integer, ForeignKey('tasks.id'))
     content = Column(Text)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     task = relationship("Task", back_populates="comments")
     replies = relationship("Comment", back_populates="parent", remote_side=[id])
-    parent = relationship("Comment", back_populates="replies")
+    parent = relationship("Comment", remote_side=[id])
+

@@ -14,6 +14,12 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+class UserOut(UserBase):
+    id: int
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
 
 class User(UserBase):
     id: int
@@ -27,6 +33,9 @@ class ProjectBase(BaseModel):
 
 class ProjectCreate(ProjectBase):
     pass
+
+class ProjectListResponse(BaseModel):
+    projects: List[ProjectBase]
 
 class Project(ProjectBase):
     id: int
